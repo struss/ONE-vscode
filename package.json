@@ -18,6 +18,7 @@
     "onCommand:onevscode.configuration-settings",
     "onCommand:onevscode.toggle-codelens",
     "onCommand:onevscode.circle-tracer",
+    "onCustomEditor:cfg.editor",
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
@@ -34,13 +35,8 @@
     "views": {
       "ONE-Views": [
         {
-          "id": "ContextExplorerView",
-          "name": "Context Explorer"
-        },
-        {
-          "id": "DetailExplorerView",
-          "name": "Detail Explorer",
-          "visibility": "collapsed"
+          "id": "OneExplorerView",
+          "name": "ONE Explorer"
         },
         {
           "id": "CompilerToolchainView",
@@ -52,7 +48,31 @@
         }
       ]
     },
+    "customEditors": [
+      {
+        "viewType": "cfg.editor",
+        "displayName": "Cfg Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.cfg"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
     "commands": [
+      {
+        "command": "onevscode.flip-cfg-to-gui",
+        "title": "Open cfg in GUI",
+        "category": "ONE",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "onevscode.flip-cfg-to-ini",
+        "title": "Open cfg in Text Editor",
+        "category": "ONE",
+        "icon": "$(go-to-file)"
+      },
       {
         "command": "onevscode.show-compile-webview",
         "title": "Compile",
@@ -142,6 +162,18 @@
           "when": "view == ExecutorView",
           "group": "navigation"
         }
+      ],
+      "editor/title": [
+        {
+          "command": "onevscode.flip-cfg-to-gui",
+          "group": "navigation",
+          "when": "resourceExtname == .cfg && !cfg.editor"
+        },
+        {
+          "command": "onevscode.flip-cfg-to-ini",
+          "group": "navigation",
+          "when": "resourceExtname == .cfg && cfg.editor"
+        }
       ]
     },
     "configuration": {
@@ -184,8 +216,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint && npm run lintjs && npm run lintcss && npm run linthtml",
-    "lint": "eslint src --ext ts",
-    "lintjs": "eslint media --ext js",
+    "lint": "eslint src --ext ts --max-warnings 0",
+    "lintjs": "eslint media --ext js --max-warnings 0",
     "lintcss": "csslint media src",
     "linthtml": "htmlhint media src",
     "unittest": "node ./out/Tests/runTest.js",
@@ -219,6 +251,7 @@
     "url": "https://github.com/Samsung/ONE-vscode.git"
   },
   "dependencies": {
+    "@vscode/codicons": "^0.0.29",
     "@vscode/webview-ui-toolkit": "^0.9.3",
     "configparser": "^0.3.9",
     "flatbuffers": "^2.0.3",

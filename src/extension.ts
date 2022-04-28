@@ -18,9 +18,9 @@ import * as vscode from 'vscode';
 import * as ssh2 from 'ssh2';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
 
-import {Backend} from './Backend/API';
+import {backendRegistrationApi} from './Backend/Backend';
+import {CfgEditorPanel} from './CfgEditor/CfgEditorPanel';
 import {decoder} from './Circlereader/Circlereader';
 import {Circletracer} from './Circletracer';
 import {CompilePanel} from './Compile/CompilePanel';
@@ -30,23 +30,9 @@ import {createStatusBarItem} from './Config/ConfigStatusBar';
 import {CodelensProvider} from './Editor/CodelensProvider';
 import {HoverProvider} from './Editor/HoverProvider';
 import {Jsontracer} from './Jsontracer';
+import {OneExplorer} from './OneExplorer';
 import {Project} from './Project';
 import {Utils} from './Utils';
-
-// List of backend extensions registered
-let backends: Backend[] = [];
-
-function backendRegistrationApi() {
-  let registrationAPI = {
-    registerBackend(backend: Backend) {
-      backends.push(backend);
-
-      console.log(`Backend ${backend.name()} was registered into ONE-vscode.`);
-    }
-  };
-
-  return registrationAPI;
-}
 
 /**
  * Set vscode context that is used globally
@@ -73,6 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   setGlobalContext();
 
+  new OneExplorer(context);
+
   // ONE view
   let refreshCompiler = vscode.commands.registerCommand('onevscode.refresh-compiler', () => {
     console.log('refresh-compiler: NYI');
@@ -95,7 +83,12 @@ export function activate(context: vscode.ExtensionContext) {
     } catch(err){
       console.error(err);
     }
-    const modelSelectOptions: vscode.QuickPickOptions = {canPickMany: false, ignoreFocusOut: false};
+    if(modelTyepList.length === 0){
+      console.log("No Model Type Added.");
+      vscode.window.showErrorMessage('No Executor Type. Please set Executor type first.');
+      return;
+    }
+    const modelSelectOptions: vscode.QuickPickOptions = {canPickMany: false, ignoreFocusOut: false, placeHolder: 'Select Type of executor to add'};
     const modelType = await vscode.window.showQuickPick(modelTyepList, modelSelectOptions);
 
     if(modelType === undefined){
@@ -113,6 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
       if(isLocal.valueOf() === 'Local')
       {
         console.log('local execution env selected');
+        // Add config on this.
         return;
       }
     }
@@ -195,6 +189,8 @@ export function activate(context: vscode.ExtensionContext) {
     CompilePanel.render(context.extensionUri);
   });
   context.subscriptions.push(compileWebView);
+
+  context.subscriptions.push(CfgEditorPanel.register(context));
 
   let logger = new Utils.Logger();
   let projectBuilder = new Project.Builder(logger);

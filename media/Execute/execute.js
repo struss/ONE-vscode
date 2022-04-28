@@ -7,6 +7,28 @@ window.addEventListener("load", main);
 
 // Main function that gets executed once the webview DOM loads
 function main() {
+  let modelTyepList = [];
+  console.log(os.homedir() + "/.one-vscode/Executor");
+  try{
+    const direc = fs.opendirSync(os.homedir() + "/.one-vscode/Executor");
+    for (const dirent of direc){
+      console.log(dirent.name);
+      if(dirent.isDirectory()){
+        modelTyepList.push(dirent.name);
+      }
+    }
+  } catch(err){
+    console.error(err);
+  }
+  console.log(modelTyepList);
+  for (let index = 0; index < modelTyepList.length; index++) {
+    const element = modelTyepList[index];
+    var option = document.createElement("vscode-option");
+    option.textContent = element;
+    const jsonFile = fs.readFileSync(os.homedir() + "/.one-vscode/Executor/" + element + "/config.json");
+    const jsonData = JSON.parse(jsonFile);
+    option.value = jsonData.Type;
+  }
   const modelDropDown = document.getElementById("modelType");
   const inputDeviceType = document.getElementById("inputDeviceType");
   const inputModelType = document.getElementById("inputModelType");
@@ -27,10 +49,10 @@ function main() {
       inputDeviceType.value = modelDropDown.options[modelDropDown.selectedIndex].textContent;
     }
   });
-  inputModelType.addEventListener("input", function(e){
-    vscode.postMessage({
-      command: "modelTypeEdit",
-      value: e.target.value,
-    });
-  });
+  // Handle case for select item on value
+  {
+    if(modelDropDown.options[modelDropDown.selectedIndex].value !== ''){
+      
+    }
+  }
 }

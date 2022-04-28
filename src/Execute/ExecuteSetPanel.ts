@@ -161,9 +161,6 @@ import {getUri} from '../Utils/Uri';
             <h2> Choose a Type of executor or Add a new one </h2>
             <vscode-dropdown id="modelType">
               <vscode-option value="">add new one......</vscode-option>
-              <vscode-option value="tflite">tflite</vscode-option>
-              <vscode-option value="onnx">onnx</vscode-option>
-              <vscode-option value="tvn_sim">tvn_simulator</vscode-option>
             </vscode-dropdown>
           </header>
           <body>
@@ -196,6 +193,10 @@ import {getUri} from '../Utils/Uri';
     private _updateWebviewContent(){
       this._panel.webview.html = this._getWebviewContent(this._panel.webview, this._externalUri);
     }
+
+    private _saveSetting(message: any){
+      
+    }
   
     /**
      * Sets up an event listener to listen for messages passed from the webview context and
@@ -211,6 +212,7 @@ import {getUri} from '../Utils/Uri';
           const command = message.command;
           switch (command) {
             case "Save":
+                this._saveSetting(message);
               return;
             case "DropDownChange":
               this._updateWebviewContent();

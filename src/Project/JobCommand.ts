@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Samsung Electronics Co., Ltd. All Rights Reserved
+ * Copyright (c) 2022 Samsung Electronics Co., Ltd. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+import assert from 'assert';
+
+import {Command} from '../Backend/Command';
+
+import {Job} from './Job';
 import {ToolArgs} from './ToolArgs';
 
-export interface Job {
+// NOTE: JobBase will be replaced by this
+class JobCommand implements Job {
   jobType: Job.Type;
   name: string;
   valid: boolean;
@@ -24,35 +30,21 @@ export interface Job {
   toolArgs: ToolArgs;
   successCallback?: () => void;
   failureCallback?: () => void;
-}
-// TODO
-// In the future, Job will be changed like
-// Ex1) onecc --config model.cfg
-// - tool: onecc
-// - toolArgs: --config, model.cfg
-// Ex2) apt-get install pkg_name
-// - tool: apt-get
-// - toolArgs: install pkg_name
 
-export namespace Job {
+  constructor(cmd: Command) {
+    // should be implemented by child classes
+    this.jobType = Job.Type.tUndefined;
+    this.name = '';
+    this.valid = false;
 
-export const enum Type {
-  tUndefined = 0,  // TODO maybe use Job.jobType = undefined?
-  // TODO: Deprecate
-  tImportTF = 1,
-  tImportTFLite,
-  tImportONNX,
-  tImportBCQ,
-  tOptimize,
-  tQuantize,
-  tPack,
-  tCodegen,
-  // New Job Types
-  tConfig,
-  tInstall,
-  tUninstall,
-  tInstalled,
-  // TODO add more
+    // init by cmd
+    assert(cmd.length > 0);
+    this.tool = cmd[0];
+    this.toolArgs = new ToolArgs();
+    for (let i = 1; i < cmd.length; i++) {
+      this.toolArgs.push(cmd[i]);
+    }
+  }
 }
 
-}  // namespace Job
+export {JobCommand};
