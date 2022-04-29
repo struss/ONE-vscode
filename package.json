@@ -92,6 +92,12 @@
         "icon": "$(desktop-download)"
       },
       {
+        "command": "onevscode.add-executor",
+        "title": "Add",
+        "category": "ONE",
+        "icon": "$(add)"
+      },
+      {
         "command": "onevscode.build",
         "title": "build",
         "category": "ONE"
@@ -138,6 +144,11 @@
         {
           "command": "onevscode.install-compiler",
           "when": "view == CompilerToolchainView",
+          "group": "navigation"
+        },
+        {
+          "command": "onevscode.add-executor",
+          "when": "view == ExecutorView",
           "group": "navigation"
         }
       ],

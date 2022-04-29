@@ -25,6 +25,7 @@ import {ConfigPanel} from './Config/ConfigPanel';
 import {createStatusBarItem} from './Config/ConfigStatusBar';
 import {CodelensProvider} from './Editor/CodelensProvider';
 import {HoverProvider} from './Editor/HoverProvider';
+import {ExecutorView } from './Execute/ExecutorView';
 import {Jsontracer} from './Jsontracer';
 import {OneExplorer} from './OneExplorer';
 import {Project} from './Project';
@@ -56,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
   setGlobalContext();
 
   new OneExplorer(context);
+  new ExecutorView(context);
 
   // ONE view
   let refreshCompiler = vscode.commands.registerCommand('onevscode.refresh-compiler', () => {
@@ -74,6 +76,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(compileWebView);
 
   context.subscriptions.push(CfgEditorPanel.register(context));
+
+
+  let addExecutorBtn = vscode.commands.registerCommand('onevscode.add-executor', () => {
+    console.log('add-executor: NYI');
+  });
+  context.subscriptions.push(addExecutorBtn);
 
   let logger = new Utils.Logger();
   let projectBuilder = new Project.Builder(logger);
