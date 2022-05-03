@@ -52,6 +52,7 @@ export const enum Type {
   tInstall,
   tUninstall,
   tInstalled,
+  tInference,
   // TODO add more
 }
 

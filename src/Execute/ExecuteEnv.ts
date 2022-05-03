@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-import { Command } from '../Backend/Command';
-import {ExecutorBase} from '../Backend/Executor';
+import {Executor} from '../Backend/Executor';
 
-// TODO: Fill inference method with tflite runner
-class ExecutorTFLite extends ExecutorBase {
-    getExecutableExt(): string[] {
-        return ['tflite'];
-    }
 
-    runInference(_modelPath: string, _options?: string[] | undefined): Command {
-        let cmd = new Command('');
-        return cmd;
-    }
-
-};
-
-export {ExecutorTFLite};
+interface ExecuteEnvMap {
+    [key: string]: ExecuteEnv;
+  }
+  
+  // List of compile environments
+  let gExecuteEnvMap: ExecuteEnvMap = {};
+  
+  export {Env, ExecuteEnv, gExecuteEnvMap};
