@@ -32,8 +32,8 @@ class BackendMockup implements Backend {
     return new CompilerBase();
   }
 
-  executor(): Executor|undefined {
-    return new ExecutorBase();
+  executors(): Executor[]|undefined {
+    return [new ExecutorBase()];
   }
 }
 
@@ -62,23 +62,7 @@ suite('Backend', function() {
         assert.strictEqual(key, backendName);
         assert.deepStrictEqual(value, backend);
       }
-      assert.strictEqual(globalExecutorArray.length, 1);
-      for (const executor of globalExecutorArray) {
-        assert.deepStrictEqual(executor, backend.executor());
-      }
-    });
-    test('registers a executor', function() {
-      let registrationAPI = backendRegistrationApi();
-
-      assert.strictEqual(globalExecutorArray.length, 0);
-      let executorMockup = new ExecutorMockup();
-      registrationAPI.registerExecutor(executorMockup);
-
-      assert.strictEqual(globalExecutorArray.length, 1);
-
-      for (const executor of globalExecutorArray) {
-        assert.deepStrictEqual(executor, executorMockup);
-      }
+      assert.notStrictEqual(backend.executors(), undefined);
     });
   });
 
